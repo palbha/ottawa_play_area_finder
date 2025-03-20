@@ -41,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
             function renderTable(filter = "all") {
                 tableBody.innerHTML = ""; // Clear table
                 allData.forEach(({ data, ageGroup }) => {
-                    if (filter === "all" || ageGroup === filter) {
+                    const displayAgeGroup = ageGroup.toLowerCase(); 
+                    if (filter === "all" || displayAgeGroup === filter) {
                         const tr = document.createElement("tr");
                         selectedIndexes.forEach(index => {
                             const td = document.createElement("td");
