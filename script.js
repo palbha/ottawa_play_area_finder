@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tableBody = table.querySelector("tbody");
 
     // Load CSV data
-    fetch("play_area.csv")
+    fetch("data/play_area.csv")
         .then(response => response.text())
         .then(data => {
             const rows = data.split("\n").map(row => row.split(","));
