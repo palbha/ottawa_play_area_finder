@@ -1,31 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const table = document.getElementById("playAreaTable");
     const tableHeader = document.getElementById("tableHeader");
-    const tableBody = table.querySelector("tbody");
+    const tableBody = document.querySelector("#playAreaTable tbody");
+    const ageFilter = document.getElementById("ageFilter"); // Dropdown reference
+    let allData = []; // Store full dataset
 
-    // Load CSV data
-    fetch("data/play_area.csv")
-         .then(response => {
+    fetch("https://raw.githubusercontent.com/palbha/ottawa_play_area_finder/main/play_area.csv")
+        .then(response => {
             if (!response.ok) throw new Error("CSV file not found!");
             return response.text();
         })
         .then(data => {
             const rows = data.split("\n").map(row => row.split(","));
-
-            if (rows.length < 2) {
-                errorMessage.style.display = "block";
-                return;
-            }
+            if (rows.length < 2) return;
 
             const headers = rows[0]; // Get column names
             const playAreas = rows.slice(1); // Data rows
 
-            // **SELECTED COLUMNS** - Change this array as per your needs
-            const selectedColumns = ["PARK_ID","FACILITYID","NAME","CLASS","AGE_GROUP","CLIMBING","TIRE_SWING","SWINGS_PRESCHOOL_SEATS","SWINGS_BELT_SEATS","SLIDES","SEE_SAW","SAND_BOX","HOPSCOTCH","PLAYHOUSE","SPRING_TOY","OTHER","FENCING","ACCESSIBLE","OPEN","MODIFIED_DATE","CREATED_DATE","PARKNAME","PARKADDRESS"
+            // **SELECTED COLUMNS** - Ensure these match your CSV headers
+             const selectedColumns = ["PARK_ID","FACILITYID","NAME","CLASS","AGE_GROUP","CLIMBING","TIRE_SWING","SWINGS_PRESCHOOL_SEATS","SWINGS_BELT_SEATS","SLIDES","SEE_SAW","SAND_BOX","HOPSCOTCH","PLAYHOUSE","SPRING_TOY","OTHER","FENCING","ACCESSIBLE","OPEN","MODIFIED_DATE","CREATED_DATE","PARKNAME","PARKADDRESS"
 ]; 
-            
-            // Get the index of selected columns
             const selectedIndexes = selectedColumns.map(col => headers.indexOf(col)).filter(index => index !== -1);
+
+            // Get Age Group column index
+            const ageGroupIndex = headers.indexOf("Age Group");
 
             // Create table headers
             selectedColumns.forEach(header => {
@@ -34,21 +31,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 tableHeader.appendChild(th);
             });
 
-            // Add table rows
-            playAreas.forEach(row => {
-                const tr = document.createElement("tr");
+            // Store all data
+            allData = playAreas.map(row => ({
+                data: row,
+                ageGroup: row[ageGroupIndex] ? row[ageGroupIndex].trim().toLowerCase() : ""
+            }));
 
-                selectedIndexes.forEach(index => {
-                    const td = document.createElement("td");
-                    td.textContent = row[index] ? row[index].trim() : ""; // Avoid undefined values
-                    tr.appendChild(td);
+            // Function to render table
+            function renderTable(filter = "all") {
+                tableBody.innerHTML = ""; // Clear table
+                allData.forEach(({ data, ageGroup }) => {
+                    if (filter === "all" || ageGroup === filter) {
+                        const tr = document.createElement("tr");
+                        selectedIndexes.forEach(index => {
+                            const td = document.createElement("td");
+                            td.textContent = data[index] ? data[index].trim() : "";
+                            tr.appendChild(td);
+                        });
+                        tableBody.appendChild(tr);
+                    }
                 });
+            }
 
-                tableBody.appendChild(tr);
+            renderTable(); // Show all by default
+
+            // Event listener for filter
+            ageFilter.addEventListener("change", () => {
+                renderTable(ageFilter.value.toLowerCase());
             });
         })
-        .catch(error => {
-            console.error("Error loading CSV:", error);
-            errorMessage.style.display = "block";
-        });
+        .catch(error => console.error("Error loading CSV:", error));
 });
