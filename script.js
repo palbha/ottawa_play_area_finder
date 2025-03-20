@@ -37,7 +37,7 @@ d3.csv('play_area.csv').then(function(data) {
 });
 document.addEventListener('DOMContentLoaded', function() {
     // Path to your CSV file
-    const csvFilePath = 'data/play_area.csv';
+    const csvFilePath = 'play_area.csv';
 
     // Function to create an HTML table from CSV data
     function createTable(data) {
