@@ -1,31 +1,37 @@
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('play_areas.csv')
-        .then(response => response.text())
-        .then(data => {
-            const playAreas = parseCSV(data);
-            displayPlayAreas(playAreas);
-        });
+// Function to add markers to the map
+function addMarkers(data) {
+  data.forEach(function(row) {
+    if (row.LATITUDE && row.LONGITUDE) {
+      // Create a marker for each play area
+      var marker = L.marker([row.LATITUDE, row.LONGITUDE])
+        .bindPopup('<b>' + row.NAME + '</b><br>' + row.PARKADDRESS);
+      markers.addLayer(marker);
+    }
+  });
+  map.addLayer(markers);
+}
 
-    document.getElementById('search').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const filteredPlayAreas = playAreas.filter(area =>
-            area.features.toLowerCase().includes(query)
-        );
-        displayPlayAreas(filteredPlayAreas);
+// Function to filter data based on the checkbox
+function filterData(data) {
+  var filterSwings = document.getElementById('filterSwings').checked;
+  if (filterSwings) {
+    return data.filter(function(row) {
+      return row.SWINGS_PRESCHOOL_SEATS && row.SWINGS_PRESCHOOL_SEATS.toLowerCase() === 'yes';
     });
+  }
+  return data;
+}
+
+// Load and process the CSV data
+d3.csv('play_area.csv').then(function(data) {
+  // Initial addition of markers
+  addMarkers(filterData(data));
+
+  // Add event listener to the checkbox
+  document.getElementById('filterSwings').addEventListener('change', function() {
+    // Clear existing markers
+    markers.clearLayers();
+    // Add filtered markers
+    addMarkers(filterData(data));
+  });
 });
-
-function parseCSV(data) {
-    // Implement CSV parsing logic
-}
-
-function displayPlayAreas(playAreas) {
-    const container = document.getElementById('play-areas');
-    container.innerHTML = '';
-    playAreas.forEach(area => {
-        const areaDiv = document.createElement('div');
-        areaDiv.className = 'play-area';
-        areaDiv.innerHTML = `<h2>${area.name}</h2><p>${area.location}</p><p>${area.features}</p>`;
-        container.appendChild(areaDiv);
-    });
-}
