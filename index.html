@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play Areas in Ottawa</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Ottawa Play Area Finder</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Play Areas in Ottawa</h1>
-    <label>
 
-  Show only play areas with preschool swing seats
-</label>
-    <div id="csv-table-container"></div>
+    <h1>Ottawa Play Area Finder</h1>
 
-    <!-- Include PapaParse Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <table id="playAreaTable">
+        <thead>
+            <tr id="tableHeader">
+                <!-- Headers will be added dynamically -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
 
     <script src="script.js"></script>
 </body>
