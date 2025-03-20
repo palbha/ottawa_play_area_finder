@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const selectedIndexes = selectedColumns.map(col => headers.indexOf(col)).filter(index => index !== -1);
 
             // Get Age Group column index
-            const ageGroupIndex = headers.indexOf("Age Group");
+            const ageGroupIndex = headers.indexOf("AGE_GROUP");
 
             // Create table headers
             selectedColumns.forEach(header => {
