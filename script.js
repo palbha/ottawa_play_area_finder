@@ -23,7 +23,7 @@ function filterData(data) {
 }
 
 // Load and process the CSV data
-d3.csv('play_area.csv').then(function(data) {
+d3.csv('data/play_area.csv').then(function(data) {
   // Initial addition of markers
   addMarkers(filterData(data));
 
