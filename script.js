@@ -17,8 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const playAreas = rows.slice(1); // Data rows
 
             // **SELECTED COLUMNS** - Ensure these match your CSV headers
-             const selectedColumns = ["PARK_ID","FACILITYID","NAME","CLASS","AGE_GROUP","CLIMBING","TIRE_SWING","SWINGS_PRESCHOOL_SEATS","SWINGS_BELT_SEATS","SLIDES","SEE_SAW","SAND_BOX","HOPSCOTCH","PLAYHOUSE","SPRING_TOY","OTHER","FENCING","ACCESSIBLE","OPEN","MODIFIED_DATE","CREATED_DATE","PARKNAME","PARKADDRESS"
-]; 
+             const selectedColumns = ['name', 'age_group', 'climbing', 'tire_swing',
+       'swings_preschool_seats', 'swings_belt_seats', 'slides', 'see_saw',
+       'sand_box', 'hopscotch', 'playhouse', 'spring_toy', 'other', 'fencing',
+       'accessible', 'open', 'modified_date', 'created_date', 'parkname',
+       'parkaddress']; 
             const selectedIndexes = selectedColumns.map(col => headers.indexOf(col)).filter(index => index !== -1);
 
             // Get Age Group column index
