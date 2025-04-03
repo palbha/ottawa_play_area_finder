@@ -34,11 +34,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const selectedIndexes = selectedColumns.map(col => headers.indexOf(col)).filter(index => index !== -1);
 
-            // Column indexes
+            // Column indexes mapping
             const columnIndexes = {};
             selectedColumns.forEach(col => {
                 columnIndexes[col] = headers.indexOf(col);
             });
+
+            // Function to format column names (replace "_" with space and capitalize)
+            function formatColumnName(columnName) {
+                return columnName
+                    .replace(/_/g, " ")  // Replace underscores with spaces
+                    .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize first letter of each word
+            }
 
             // Store all data
             allData = playAreas.map(row => {
@@ -49,10 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 return rowData;
             });
 
-            // Create table headers dynamically
+            // Create table headers dynamically with formatted column names
             selectedColumns.forEach(header => {
                 const th = document.createElement("th");
-                th.textContent = header.replace('_', ' '); // Format header
+                th.textContent = formatColumnName(header); // Format header names
                 tableHeader.appendChild(th);
             });
 
@@ -65,11 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     const row = rowObj.data;
                     let showRow = true;
 
+                    // Apply age group filter
                     if (ageFilterValue !== "all" && rowObj.age_group !== ageFilterValue) {
                         showRow = false;
                     }
 
-                    // Apply feature filters
+                    // Apply feature filters (Yes/Anything)
                     featureColumns.forEach(feature => {
                         const filterValue = featureFilters[feature].value.toLowerCase();
                         if (filterValue === "yes" && rowObj[feature] !== "yes") {
