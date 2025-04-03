@@ -15,6 +15,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let allData = [];
 
+    // Initialize Leaflet Map
+    const map = L.map('map').setView([45.4215, -75.6972], 13); // Default to Ottawa coordinates
+
+    // Add OpenStreetMap tile layer to the map
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Function to geocode address using OpenStreetMap Nominatim API
+    async function geocodeAddress(address) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.length > 0) {
+            return {
+                lat: parseFloat(data[0].lat),
+                lon: parseFloat(data[0].lon)
+            };
+        }
+        return null; // No result found
+    }
+
     fetch("https://raw.githubusercontent.com/palbha/ottawa_play_area_finder/main/play_area.csv")
         .then(response => {
             if (!response.ok) throw new Error("CSV file not found!");
@@ -34,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const selectedIndexes = selectedColumns.map(col => headers.indexOf(col)).filter(index => index !== -1);
 
-            // Column indexes mapping
             const columnIndexes = {};
             selectedColumns.forEach(col => {
                 columnIndexes[col] = headers.indexOf(col);
@@ -68,7 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 tableBody.innerHTML = ""; // Clear table
                 const ageFilterValue = ageFilter.value.toLowerCase();
 
-                allData.forEach(rowObj => {
+                // Clear map markers before re-rendering
+                map.eachLayer(layer => {
+                    if (layer instanceof L.Marker) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                allData.forEach(async rowObj => {
                     const row = rowObj.data;
                     let showRow = true;
 
@@ -93,6 +121,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             tr.appendChild(td);
                         });
                         tableBody.appendChild(tr);
+
+                        // Geocode the park address and add marker to map
+                        const address = row[columnIndexes["parkaddress"]];
+                        const geoLocation = await geocodeAddress(address);
+                        if (geoLocation) {
+                            L.marker([geoLocation.lat, geoLocation.lon]).addTo(map)
+                                .bindPopup(`<b>${row[columnIndexes["parkname"]]}</b><br>${address}`);
+                        }
                     }
                 });
             }
