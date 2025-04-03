@@ -7,10 +7,16 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <!-- Leaflet.js for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 
     <h1>Ottawa Play Area Finder</h1>
+
+    <div id="map" style="height: 400px;"></div> <!-- Map will be here -->
 
     <label for="ageFilter">Filter by Age Group:</label>
     <select id="ageFilter">
@@ -26,7 +32,7 @@
             const features = ['climbing', 'tire_swing', 'swings_preschool_seats', 'swings_belt_seats', 
                               'slides', 'see_saw', 'sand_box', 'hopscotch', 'playhouse', 'spring_toy', 
                               'other', 'fencing', 'accessible', 'open'];
-            
+
             // Function to format column names (replace "_" with space and capitalize)
             function formatColumnName(columnName) {
                 return columnName
