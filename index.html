@@ -26,9 +26,17 @@
             const features = ['climbing', 'tire_swing', 'swings_preschool_seats', 'swings_belt_seats', 
                               'slides', 'see_saw', 'sand_box', 'hopscotch', 'playhouse', 'spring_toy', 
                               'other', 'fencing', 'accessible', 'open'];
+            
+            // Function to format column names (replace "_" with space and capitalize)
+            function formatColumnName(columnName) {
+                return columnName
+                    .replace(/_/g, " ")  // Replace underscores with spaces
+                    .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize first letter of each word
+            }
+
             features.forEach(feature => {
                 document.write(`
-                    <label for="${feature}Filter">${feature.replace('_', ' ')}:</label>
+                    <label for="${feature}Filter">${formatColumnName(feature)}:</label>
                     <select id="${feature}Filter">
                         <option value="all">Anything</option>
                         <option value="yes">Yes</option>
