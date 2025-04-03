@@ -37,6 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
         return null; // No result found
     }
 
+    // Custom icon for park markers
+    const parkIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png', // Default marker icon
+        iconSize: [25, 41], // Icon size
+        iconAnchor: [12, 41], // Position of the icon anchor
+        popupAnchor: [1, -34], // Position of the popup anchor
+        shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+        shadowSize: [41, 41], // Shadow size
+    });
+
     fetch("https://raw.githubusercontent.com/palbha/ottawa_play_area_finder/main/play_area.csv")
         .then(response => {
             if (!response.ok) throw new Error("CSV file not found!");
@@ -126,8 +136,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         const address = row[columnIndexes["parkaddress"]];
                         const geoLocation = await geocodeAddress(address);
                         if (geoLocation) {
-                            L.marker([geoLocation.lat, geoLocation.lon]).addTo(map)
+                            // Add marker to the map with a custom icon
+                            L.marker([geoLocation.lat, geoLocation.lon], { icon: parkIcon })
+                                .addTo(map)
                                 .bindPopup(`<b>${row[columnIndexes["parkname"]]}</b><br>${address}`);
+                        } else {
+                            console.warn(`Unable to geocode address: ${address}`);
                         }
                     }
                 });
